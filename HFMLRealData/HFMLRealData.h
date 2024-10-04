@@ -58,7 +58,7 @@ class HFMLRealData : public SubsysReco
   int Event;
   std::fstream m_jsonOut;
 
-  std::string _foutname = "TestZZData.json";
+  std::string _foutname = "Data.json";
   TrkrHitSetContainer *m_hitsets = NULL;
   TrkrClusterContainer *m_clus = NULL;
   TrackSeedContainer *m_si_seeds = NULL;
