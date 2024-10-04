@@ -81,7 +81,7 @@
 #include <trackbase/TrkrClusterContainer.h>
 #include <trackbase_historic/TrackSeedContainer.h>
 
-
+#include <trackbase/TrkrClusterCrossingAssocv1.h>
 
 using namespace std;
 
@@ -92,6 +92,7 @@ using std::endl;
 
 TFile * DebugFile;
 TTree *RawHitTree;
+TTree *INTTClusTree;
 
 
 
@@ -112,6 +113,14 @@ int MVTXHitSize;
 int EvtID;
 int INTTHitSize;
 int NTruthTrks;
+
+int INTTClusEvent;
+int INTTClusID;
+float INTTClusX;
+float INTTClusY;
+float INTTClusZ;
+int INTTClusCrossing;
+int INTTClusTimeBucket;
 
 
 
@@ -142,6 +151,15 @@ int HFMLRealData::Init(PHCompositeNode* topNode)
 	RawHitTree->Branch("SiHitX",&SiHitX);
 	RawHitTree->Branch("SiHitY",&SiHitY);
 	RawHitTree->Branch("SiHitZ",&SiHitZ);
+	
+	INTTClusTree = new TTree("INTTClusTree","INTTClusTree");
+	INTTClusTree->Branch("INTTClusEvent",&INTTClusEvent);
+	INTTClusTree->Branch("INTTClusID",&INTTClusID);	
+	INTTClusTree->Branch("INTTClusX",&INTTClusX);
+	INTTClusTree->Branch("INTTClusY",&INTTClusY);
+	INTTClusTree->Branch("INTTClusZ",&INTTClusZ);
+	INTTClusTree->Branch("INTTClusCrossing",&INTTClusCrossing);
+	INTTClusTree->Branch("INTTClusTimeBucket",&INTTClusTimeBucket);
 
 
 	m_jsonOut.open(_foutname, fstream::out);
@@ -403,6 +421,8 @@ int HFMLRealData::process_event(PHCompositeNode * topNode)
 
 				int INTTTimeBucket = InttDefs::getTimeBucketId(hitKey);
 
+
+
 				auto surface = actsGeom->maps().getSiliconSurface(hitsetkey);
 
 				//			geom->find_strip_center_localcoords(LadderZId, Row, Col,location);
@@ -560,7 +580,7 @@ int HFMLRealData::process_event(PHCompositeNode * topNode)
 	//	auto hitset_range_intt = m_hitsets->getHitSets(TrkrDefs::TrkrId::inttId);
 
 
-	int INTTClusID = 0; 
+	INTTClusID = 0; 
 
 	for(TrkrHitSetContainer::ConstIterator hitset_iter = hitset_range_intt.first;
 			hitset_iter != hitset_range_intt.second;
@@ -621,9 +641,24 @@ int HFMLRealData::process_event(PHCompositeNode * topNode)
 
 			ClusTree.PushBack(clusTree2, alloc);
 
+
+			//Produce INTT Clus Tree
+
+			INTTClusEvent = EvtID;
+			INTTClusX = clusx;
+			INTTClusY = clusy;
+			INTTClusZ = clusz;
+			INTTClusCrossing = bunch_crossing_number;
+			INTTClusTimeBucket =  InttDefs::getTimeBucketId(cluskey);
+
+
+			INTTClusTree->Fill();
+
+
 			INTTClusID++;
 
-
+	
+			
 		}
 
 	}
