@@ -1,8 +1,8 @@
 #!/bin/csh
 
 # File containing the list of numbers
-#set filename = "Numbers.txt"
-set filename = "Short.txt"
+set filename = "Numbers.txt"
+#set filename = "Short.txt"
 
 
 
