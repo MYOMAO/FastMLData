@@ -7,12 +7,15 @@ Notification=Never
 
 
 # The executable we want to run.
-Executable=Fun4All_G4_Prototype2.sh
+Executable=RunScript.sh
 # The argument to pass to the executable.
 
 Run=52449
 Seg=122
-Arguments=$(Cluster) $(Run) $(Seg)
+
+OutFilePath=/sphenix/tg/tg01/hf/zshi/TestProd/Data
+
+Arguments=$(Cluster) $(Run) $(Seg) $(OutFilePath)
 
 #transfer_input_files=FastSim
 
